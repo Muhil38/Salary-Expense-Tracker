@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+<style>
+    body{
+        padding: 20px;
+        background-image: url(https://wallpapercave.com/wp/wp7319154.jpg) ;
+    }
+    .container{
+        max-width: 400px;
+        margin: auto;
+        border:  5px solid rgb(179, 178, 178) ;
+        box-shadow: 20px black;
+        padding: 20px;
+        border-radius: 15px;
+        background-color: rgb(249, 182, 182);
+    }
+    .output{
+        font-weight: bold;
+        margin-top: 20px;
+    }
+    button{
+        margin-top: 10px;
+        padding: 5px 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 20px;
+    }
+    button:disabled{
+        background-color: grey;
+        cursor: not-allowed;
+    }
+
+    .purchase-list{
+        margin-top: 20px;
+    }
+    .purchase-list ul{
+        list-style-type:none ;
+        padding-left: 0;
+    }
+    .purchase-list li{
+        display: flex;
+        justify-content: space-between;
+        padding: 5px;
+        border-bottom: 1px solid #ddd;
+    }
+    input{
+        border: none;
+        padding: 5px;
+        margin-top: 10px;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="container">
+    <h1>Salary and Expense tracker</h1>
+
+    <label for="salary">Enter salary:</label>
+    <input type="number" id="salary" placeholder="Add salary">
+    <button onclick="addSalary()">Add salary</button>
+    <hr>
+
+
+    <h2>Purchase a product</h2>
+    <label for="productName">Product Name:</label>
+    <input type="text" id="productName" placeholder="Enter Product name">
+
+
+    <label for="productPrice">Product price:</label>
+    <input type="number" id="productPrice" placeholder="Enter product price">
+    <button id="purchaseButton" onclick="purchaseProduct()">Purchase</button>
+
+
+    <div class="output">
+        <p>Current Balance: ₹<span id="balance">0</span></p>
+        <p>Total expense: ₹<span id="totalExpense">0</span></p>
+    </div>
+
+
+    <div class="purchase-list">
+        <h3>Purchased products</h3>
+        <ul id="productList"></ul>
+    </div>
+</div>
+
+
+
+
+<script>
+
+
+let balance = 0;    //it tracks of how much money is available
+let totalExpense=0;  //it tracks of how much money you've spent
+
+
+function addSalary(){
+    const salaryInput=document.getElementById('salary').value;  //it retriving the value that you entered in the salary input field
+    const salary= parseFloat(salaryInput);  //praseloat convert the value into number
+
+    if(isNaN(salary) || salary<=0){     //if entered value is not an number or less than 0 alert the message
+        alert("please enter a valid amount. ");
+        return;
+    }
+
+    balance += salary;
+    updateBalance();      //entered salary is added to the balance and show the updated balance
+    
+}
+
+
+function purchaseProduct(){
+    const productName= document.getElementById('productName').value;
+    const productPriceInput = document.getElementById('productPrice').value;
+    const productPrice = parseFloat(productPriceInput);
+
+    if(!productName || isNaN(productPrice) || productPrice <=0){  //if the product name is empty or not a valid number or if the product price less than equal to 0 give the alert msg
+        alert("please enter valid product details.");
+        return;
+
+    }
+
+    if(balance-productPrice <0){    //calculate the balance after the purchase, if the value is less than 0 the user doesn't have the money to purchase 
+        alert("insufficient balance"); 
+        return;
+    }
+
+
+    balance -=productPrice; //it deducts the products price from the current balance
+    totalExpense +=productPrice;
+    updateBalance();  //it updated the balance after purchase
+    updateTotalExpense();  //it update the total expense after purchase
+    addProductToList(productName,productPrice)  //it adds the purchased products name and price takes two arguments product name product price
+
+}
+
+function addProductToList(name,price){
+    const productList =document.getElementById('productList');
+    const listItem = document.createElement('li');
+    listItem.innerHTML= `${name} <span> ₹${price}</span> `; //it is used to insert the name and price
+    productList.appendChild(listItem); //it adds the product to the list
+}
+
+
+function updateBalance(){
+    document.getElementById('balance').textContent= balance;  //it retrives the span element which id names as balance
+
+    const purchaseButton= document.getElementById('purchaseButton'); //retrive the purchase button
+    if(balance <=0){     //if the balance less than 0 it prevent using purchase button nd if greter than 0 the button will enabled
+        purchaseButton.disabled=true;
+    }else{
+        purchaseButton.disabled=false;
+
+    }
+    }
+
+
+    function updateTotalExpense(){
+        document.getElementById('totalExpense').textContent= totalExpense;
+    }
+
+
+
+</script>
+
+
+
+
+
+</body>
+</html>

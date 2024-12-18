@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary & Expense Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .output {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+        .purchase-list {
+            margin-top: 20px;
+        }
+        .purchase-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .purchase-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Salary and Expense Tracker</h1>
+
+        <!-- Salary Section -->
+        <label for="salary">Enter Salary:</label>
+        <input type="number" id="salary" placeholder="Add salary" />
+        <button onclick="addSalary()">Add Salary</button>
+
+        <hr>
+
+        <!-- Expense Section -->
+        <h2>Purchase a Product</h2>
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" placeholder="Enter product name" />
+
+        <label for="productPrice">Product Price:</label>
+        <input type="number" id="productPrice" placeholder="Enter product price" />
+        <button id="purchaseButton" onclick="purchaseProduct()">Purchase</button>
+
+        <!-- Balance & Expense Display -->
+        <div class="output">
+            <p>Current Balance: ₹<span id="balance">0</span></p>
+            <p>Total Expense: ₹<span id="totalExpense">0</span></p>
+        </div>
+
+        <!-- Purchase List -->
+        <div class="purchase-list">
+            <h3>Purchased Products</h3>
+            <ul id="productList"></ul>
+        </div>
+    </div>
+
+    <script>
+        let balance = 0;
+        let totalExpense = 0;
+
+        function addSalary() {
+            const salaryInput = document.getElementById('salary').value;
+            const salary = parseFloat(salaryInput);
+
+            if (isNaN(salary) || salary <= 0) {
+                alert("Please enter a valid salary amount.");
+                return;
+            }
+
+            balance += salary;
+            updateBalance();
+        }
+
+        function purchaseProduct() {
+            const productName = document.getElementById('productName').value;
+            const productPriceInput = document.getElementById('productPrice').value;
+            const productPrice = parseFloat(productPriceInput);
+
+            if (!productName || isNaN(productPrice) || productPrice <= 0) {
+                alert("Please enter valid product details.");
+                return;
+            }
+
+            if (balance - productPrice < 0) {
+                alert("Insufficient balance! You cannot purchase this item.");
+                return;
+            }
+
+            balance -= productPrice;
+            totalExpense += productPrice;
+            updateBalance();
+            updateTotalExpense();
+            addProductToList(productName, productPrice);
+        }
+
+        function addProductToList(name, price) {
+            const productList = document.getElementById('productList');
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `${name} <span>₹${price.toFixed(2)}</span>`;
+            productList.appendChild(listItem);
+
+            // Clear input fields after purchase
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance.toFixed(2);
+
+            // Disable purchase button if balance is zero or negative
+            const purchaseButton = document.getElementById('purchaseButton');
+            if (balance <= 0) {
+                purchaseButton.disabled = true;
+            } else {
+                purchaseButton.disabled = false;
+            }
+        }
+
+        function updateTotalExpense() {
+            document.getElementById('totalExpense').textContent = totalExpense.toFixed(2);
+        }
+    </script>
+</body>
+</html>
